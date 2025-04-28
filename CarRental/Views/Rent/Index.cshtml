@@ -1,0 +1,47 @@
+﻿@model List<Car>
+
+@{
+    ViewData["Title"] = "Rent a Car";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<h1 class="mb-4">Available Cars</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var car in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="~/images/@car.ImageName" class="card-img-top" style="height:200px; object-fit:cover;" alt="@car.Model" />
+                <div class="card-body">
+                    <h5 class="card-title">@car.Brand @car.Model (@car.YearOfMake)</h5>
+                    <p class="card-text">
+                        Color: @car.color <br />
+                        Price/Day: @car.PricePerDay.ToString("C") <br />
+                        Plate Number: @car.PlateNumber <br />
+                        Status: ✅
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a asp-action="RentCar" asp-route-id="@car.Id" class="btn btn-primary w-100">Rent Now</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <p class="mt-4 text-center">No cars available for rent at the moment.</p>
+}

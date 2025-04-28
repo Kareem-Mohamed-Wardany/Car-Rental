@@ -1,0 +1,64 @@
+﻿@model List<CarRental.Models.RentedCar>
+
+@{
+    ViewData["Title"] = "Rented Cars";
+}
+
+<h1 class="text-center my-4 text-primary">Rented Cars</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center" role="alert">
+        No cars have been rented yet.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var rentedCar in Model)
+        {
+            <div class="col">
+                <div class="card shadow-sm rounded border-0">
+                    <!-- Card Image -->
+                    <img src="~/images/@(string.IsNullOrEmpty(rentedCar.Car?.ImageName) ? "default-car.jpg" : rentedCar.Car?.ImageName)" class="card-img-top" alt="@rentedCar.Car?.Model" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">@rentedCar.Car?.Brand - @rentedCar.Car?.Model</h5>
+                        <p class="card-text"><strong>Plate Number:</strong> @rentedCar.Car?.PlateNumber</p>
+                        <p class="card-text"><strong>Price/Day:</strong> @rentedCar.Car?.PricePerDay.ToString("C")</p>
+                        <p class="card-text"><strong>Rented At:</strong> @rentedCar.RentedAt.ToLocalTime().ToString("g")</p>
+                        <p class="card-text">
+                            <strong>Rented Since: </strong>@((DateTime.Now.Date - rentedCar.RentedAt.ToLocalTime().Date).Days) days ago
+                        </p>
+                        <p class="card-text">
+                            <strong>Price Since Rented:</strong>
+                            @(((DateTime.Now.Date - rentedCar.RentedAt.ToLocalTime().Date).Days * (rentedCar.Car?.PricePerDay ?? 0)).ToString("C"))
+                        </p>
+
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <p class="card-text"><strong>Renter Name:</strong> @rentedCar.Renter?.UserName</p>
+                            <p class="card-text"><strong>Renter Email:</strong> @rentedCar.Renter?.Email</p>
+                            <p class="card-text"><strong>Renter Phone:</strong> @rentedCar.Renter?.PhoneNumber</p>
+
+                            <form asp-action="CancelRent" asp-route-carId="@rentedCar.CarId" asp-route-userId="@rentedCar.RenterId" method="post" onsubmit="return confirm('Are you sure you want to cancel this rent?');" class="d-inline-block">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">
+                                    <i class="fas fa-times-circle"></i> Cancel Rent
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        // Initialize tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
+}
