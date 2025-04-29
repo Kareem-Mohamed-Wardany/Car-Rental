@@ -11,6 +11,14 @@ Manage cars and rentals easily with **Admin** and **User** roles.
 
 ---
 
+## 🎥 Demo Video
+
+[![Watch the video](https://img.youtube.com/vi/4Qs_KyWjpmg/maxresdefault.jpg)](https://www.youtube.com/watch?v=4Qs_KyWjpmg)
+
+Click the image above to watch the demo!
+
+---
+
 ## ✨ Features
 
 ### 🛠️ Admin
