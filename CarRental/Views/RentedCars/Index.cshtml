@@ -22,16 +22,21 @@ else
                     <!-- Card Image -->
                     <img src="~/images/@(string.IsNullOrEmpty(rentedCar.Car?.ImageName) ? "default-car.jpg" : rentedCar.Car?.ImageName)" class="card-img-top" alt="@rentedCar.Car?.Model" style="height: 200px; object-fit: cover;" />
                     <div class="card-body">
+                        @{
+                            var rentedDays = Math.Max(1, (DateTime.Now.Date - rentedCar.RentedAt.ToLocalTime().Date).Days);
+                            var pricePerDay = @rentedCar.Car?.PricePerDay ?? 0;
+                            var totalPrice = rentedDays * pricePerDay;
+                        }
+                        
                         <h5 class="card-title text-truncate">@rentedCar.Car?.Brand - @rentedCar.Car?.Model</h5>
                         <p class="card-text"><strong>Plate Number:</strong> @rentedCar.Car?.PlateNumber</p>
                         <p class="card-text"><strong>Price/Day:</strong> @rentedCar.Car?.PricePerDay.ToString("C")</p>
                         <p class="card-text"><strong>Rented At:</strong> @rentedCar.RentedAt.ToLocalTime().ToString("g")</p>
                         <p class="card-text">
-                            <strong>Rented Since: </strong>@((DateTime.Now.Date - rentedCar.RentedAt.ToLocalTime().Date).Days) days ago
+                            <strong>Rented Since:</strong> @rentedDays days ago
                         </p>
                         <p class="card-text">
-                            <strong>Price Since Rented:</strong>
-                            @(((DateTime.Now.Date - rentedCar.RentedAt.ToLocalTime().Date).Days * (rentedCar.Car?.PricePerDay ?? 0)).ToString("C"))
+                            <strong>Price Since Rented:</strong> @totalPrice.ToString("C")
                         </p>
 
 
