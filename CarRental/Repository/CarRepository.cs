@@ -48,6 +48,7 @@ namespace CarRental.Repository
 
         public async Task UpdateByIdAsync(int id, Car NewCar)
         {
+
             var car = await _context.Cars.FindAsync(id);
             if (car == null) return;
 
@@ -99,7 +100,30 @@ namespace CarRental.Repository
 
         public async Task DeleteByIdAsync(int id)
         {
+            // Find the rented car record
+            var rentedCar = _context.RentedCars
+                .FirstOrDefault(rc => rc.CarId == id);
+
+            if (rentedCar == null)
+            {
+                return;
+            }
+
+            // Mark car as available again
             var car = await _context.Cars.FindAsync(id);
+            if (car != null)
+            {
+                car.IsRented = false;
+                _context.Update(car);
+            }
+
+            // Update the user's HasRentedCar
+            var user = _context.Users.FirstOrDefault(u => u.Id == rentedCar.RenterId);
+            if (user != null)
+            {
+                user.HasRentedCar = false;
+                _context.Update(user);
+            }
             if (car == null) return;
             if (!string.IsNullOrEmpty(car.ImageName))
             {
